@@ -1,0 +1,312 @@
+
+Create this file in your repository:
+
+`docs/git-basics-and-branching.md`
+
+# Git Basics and Branching Workflow
+
+Topics: Git fundamentals, commits, branches, merging, and conflict resolution
+
+## 1. Objectives
+
+By completing this lab, I will be able to:
+
+- Understand the basic Git workflow.
+- Check the status of a repository and inspect changes.
+- Stage and commit changes.
+- View commit history.
+- Create and switch between branches.
+- Merge branches into the main branch.
+- Resolve a simple merge conflict.
+- Push changes to GitHub.
+
+## 2. Essential Git Commands
+
+| Command                   | Purpose                                                  |
+| ------------------------- | -------------------------------------------------------- |
+| `git status`              | Shows modified, staged, and untracked files.             |
+| `git add <file>`          | Stages a specific file.                                  |
+| `git add .`               | Stages changes in the current directory.                 |
+| `git diff`                | Shows unstaged changes.                                  |
+| `git diff --staged`       | Shows staged changes.                                    |
+| `git commit -m "message"` | Records staged changes.                                  |
+| `git log --oneline`       | Displays a compact commit history.                       |
+| `git branch`              | Lists local branches.                                    |
+| `git switch -c <name>`    | Creates and switches to a new branch.                    |
+| `git switch <name>`       | Switches to an existing branch.                          |
+| `git merge <name>`        | Merges the specified branch into the current branch.     |
+| `git push`                | Uploads local commits to a remote repository.            |
+| `git pull`                | Fetches and integrates changes from a remote repository. |
+
+## 3. Inspect the Repository
+
+Run the following commands from the project directory:
+
+```
+git status
+git branch
+git log --oneline
+git remote -v
+```
+
+These commands help me understand the current state of the repository, the active branch, previous commits, and the configured remote repository.
+
+## 4. Practice Staging and Committing
+
+Create a directory for the lab if it does not already exist:
+
+```
+mkdir -p docs
+```
+
+Create a file called `git-practice.txt` and add the following content:
+
+```
+Git Practice Lab
+
+Git tracks changes to files over time.
+A commit records a snapshot of staged changes.
+Branches allow developers to work on separate tasks.
+Merging integrates changes from different branches.
+```
+
+Now execute:
+
+```
+git status
+git add docs/git-practice.txt
+git diff --staged
+git commit -m "docs: add git practice notes"
+git log --oneline -5
+```
+
+**Expected result:** The file is committed, and the new commit appears in the Git history.
+
+## 5. Create and Work on a Branch
+
+Branches allow developers to develop features without directly changing the main branch.
+
+Create a new branch:
+
+```
+git switch -c feature/git-workflow
+```
+
+Create a file named `docs/branching.md` with this content:
+
+```
+# Git Branching
+
+## Why Branches Matter
+
+Branches isolate changes so that new features and experiments
+can be developed independently of the main branch.
+
+## Typical Workflow
+
+1. Create a feature branch.
+2. Make changes.
+3. Test the changes.
+4. Commit the changes.
+5. Merge the branch into main after reviewing it.
+```
+
+Stage and commit the new file:
+
+```
+git status
+git add docs/branching.md
+git diff --staged
+git commit -m "docs: explain git branching workflow"
+```
+
+Confirm the branch and commit history:
+
+```
+git branch
+git log --oneline --graph --all
+```
+
+## 6. Merge the Feature Branch
+
+Switch back to the main branch:
+
+```
+git switch main
+```
+
+Merge the feature branch:
+
+```
+git merge feature/git-workflow
+```
+
+Inspect the result:
+
+```
+git log --oneline --graph --all
+git status
+```
+
+**Expected result:** `docs/branching.md` is available on the main branch, and Git records the integrated changes.
+
+If Git reports that the branch is already up to date, verify that you created and committed the feature on the intended branch.
+
+## 7. Practice Resolving a Merge Conflict
+
+A merge conflict occurs when Git cannot automatically reconcile competing changes to the same part of a file.
+
+First, create a new branch:
+
+```
+git switch -c practice/merge-conflict
+```
+
+Create `docs/conflict-demo.txt` containing:
+
+```
+Learning Git is important.
+```
+
+Commit the file:
+
+```
+git add docs/conflict-demo.txt
+git commit -m "test: add merge conflict demonstration"
+```
+
+Now change the file on the feature branch:
+
+```
+Learning Git is essential for DevOps.
+```
+
+Commit that change:
+
+```
+git add docs/conflict-demo.txt
+git commit -m "docs: update git learning statement"
+```
+
+Switch to main and change the same line differently:
+
+```
+git switch main
+```
+
+Edit `docs/conflict-demo.txt` so it contains:
+
+```
+Learning Git is essential for software engineering.
+```
+
+Commit the change on main:
+
+```
+git add docs/conflict-demo.txt
+git commit -m "docs: update git learning statement on main"
+```
+
+Attempt to merge the feature branch:
+
+```
+git merge practice/merge-conflict
+```
+
+Git should report a conflict because both branches changed the same line.
+
+Open `docs/conflict-demo.txt`. It should contain conflict markers similar to these:
+
+```
+<<<<<<< HEAD
+Learning Git is essential for software engineering.
+=======
+Learning Git is essential for DevOps.
+>>>>>>> practice/merge-conflict
+```
+
+Resolve the conflict by replacing the entire file with:
+
+```
+Learning Git is essential for both DevOps and software engineering.
+```
+
+Then complete the merge:
+
+```
+git add docs/conflict-demo.txt
+git commit -m "fix: resolve git merge conflict"
+```
+
+Verify the result:
+
+```
+git status
+git log --oneline --graph --all
+```
+
+**Expected result:** The conflict is resolved, and the final file contains the agreed statement without any conflict markers.
+
+## 8. Push Changes to GitHub
+
+Check the configured remote:
+
+```
+git remote -v
+```
+
+If `origin` is already configured, push the main branch:
+
+```
+git push -u origin main
+```
+
+If your repository has no remote yet, add your GitHub repository URL first:
+
+```
+git remote add origin https://github.com/YOUR_USERNAME/devops-roadmap.git
+git push -u origin main
+```
+
+Replace `YOUR_USERNAME` with your actual GitHub username.
+
+If your existing repository is already connected to GitHub, do not add the remote again. Authenticate through GitHub's supported sign-in or credential workflow if prompted.
+
+## 9. Best Practices
+
+- Write clear and meaningful commit messages.
+- Commit small, logical units of work.
+- Use feature branches for independent changes.
+- Review changes with `git diff` before committing.
+- Test your work before merging.
+- Resolve conflicts carefully and remove all conflict markers.
+- Never commit passwords, API keys, access tokens, or other secrets.
+- Push completed work to GitHub regularly.
+
+## 10. Completion Checklist
+
+- Inspected the repository using Git commands.
+- Created and committed a practice file.
+- Created a feature branch.
+- Made a commit on the feature branch.
+- Merged the feature branch into main.
+- Simulated and resolved a merge conflict.
+- Reviewed the commit history.
+- Pushed changes to GitHub.
+
+## 11. What I Learned
+
+After completing this lab, I understand how Git tracks changes, how commits preserve project history, and how branches allow independent development. I also practiced merging changes, resolving conflicts, and publishing my work to GitHub.
+
+These skills form the foundation for collaborative software development and future CI/CD workflows.
+
+## Commands to finish today's work
+
+After saving the document, run:
+
+```
+git add docs/git-basics-and-branching.md
+git commit -m "docs: add git fundamentals and branching lab"
+git push
+```
+
